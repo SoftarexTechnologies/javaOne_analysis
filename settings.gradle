@@ -1,0 +1,3 @@
+rootProject.name = 'gradle_mm'
+include ':common', ':models', ':web'
+

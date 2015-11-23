@@ -1,0 +1,14 @@
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Analysis web',
+                'Implementation-Version': version
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+dependencies {
+    compile project(':common')
+    compile 'org.primefaces:primefaces:5.1'
+    compile 'javax.transaction:jta:1.1'
+
+}

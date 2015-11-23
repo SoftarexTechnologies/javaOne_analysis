@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_models" default="compile.module.models">
+  <dirname property="module.models.basedir" file="${ant.file.module_models}"/>
+  
+  <property name="module.jdk.home.models" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.models" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.models" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.models" value="-encoding windows-1251 -source 8 ${compiler.args}"/>
+  
+  <property name="models.output.dir" value="${module.models.basedir}/build"/>
+  <property name="models.testoutput.dir" value="${module.models.basedir}/../out/test/models"/>
+  
+  <path id="models.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="models.module.production.classpath">
+    <path refid="${module.jdk.classpath.models}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  <path id="models.runtime.production.module.classpath">
+    <pathelement location="${models.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  <path id="models.module.classpath">
+    <path refid="${module.jdk.classpath.models}"/>
+    <pathelement location="${models.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  <path id="models.runtime.module.classpath">
+    <pathelement location="${models.testoutput.dir}"/>
+    <pathelement location="${models.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.models">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.models">
+    <patternset refid="excluded.from.module.models"/>
+  </patternset>
+  
+  <path id="models.module.sourcepath">
+    <dirset dir="${module.models.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+
+  <target name="compile.module.models" depends="compile.module.models.production,compile.module.models.tests" description="Compile module models"/>
+  
+  <target name="compile.module.models.production" depends="register.custom.compilers" description="Compile module models; production classes">
+    <mkdir dir="${models.output.dir}"/>
+    <javac2 destdir="${models.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.models}/javac">
+      <compilerarg line="${compiler.args.models}"/>
+      <bootclasspath refid="models.module.bootclasspath"/>
+      <classpath refid="models.module.production.classpath"/>
+      <src refid="models.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.models"/>
+    </javac2>
+    
+    <copy todir="${models.output.dir}">
+      <fileset dir="${module.models.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="compile" depends="register.custom.compilers"
+          description="compile the source " >
+
+    <javac srcdir="src" classpathref="models.runtime.module.classpath">
+      <compilerarg value="-proc:only"/>
+      <compilerarg value="-processor"/>
+      <compilerarg value="com.mysema.query.apt.QuerydslAnnotationProcessor"/>
+      <compilerarg value="-s"/>
+      <compilerarg value="generated"/>
+    </javac>
+
+    <javac classpathref="models.runtime.module.classpath" destdir="build">
+      <src path="src"/>
+      <src path="generated"/>
+    </javac>
+
+  </target>
+
+  <target name="compile.module.models.tests" depends="register.custom.compilers,compile.module.models.production" description="compile module models; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.models" description="cleanup module">
+    <delete dir="${models.output.dir}"/>
+    <delete dir="${models.testoutput.dir}"/>
+  </target>
+</project>

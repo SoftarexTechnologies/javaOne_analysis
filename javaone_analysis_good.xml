@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="javaone_analysis_good" default="all">
+  
+  
+  <property file="javaone_analysis_good.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.tox/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.war"/>
+    <include name="*.ear"/>
+    <include name="*.apk"/>
+    <include name="*.zip"/>
+    <include name="*.swc"/>
+    <include name="*.ane"/>
+    <include name="*.egg"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
+  <path id="jdk.classpath.1.8">
+    <fileset dir="${jdk.home.1.8}">
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jfr.jar"/>
+      <include name="jre/lib/jfxswt.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="jre/lib/ext/access-bridge-64.jar"/>
+      <include name="jre/lib/ext/cldrdata.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/jaccess.jar"/>
+      <include name="jre/lib/ext/jfxrt.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/nashorn.jar"/>
+      <include name="jre/lib/ext/sunec.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunmscapi.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/zipfs.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.8}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.lib.classpath">
+    <fileset dir="${basedir}/WebContent/WEB-INF/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  
+  <!-- Application Server Libraries -->
+  
+  <path id="library.tomcat_7.0.65.classpath">
+    <pathelement location="C:/Projects/Softarex/javaone_analysis/servers/apache-tomcat-7.0.65/lib/jsp-api.jar"/>
+    <pathelement location="C:/Projects/Softarex/javaone_analysis/servers/apache-tomcat-7.0.65/lib/servlet-api.jar"/>
+  </path>
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="C:/Program Files (x86)/JetBrains/IntelliJ IDEA 14.1.5/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm-all.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+
+  <!-- Modules -->
+  
+  <import file="${basedir}/models/module_models.xml"/>
+  
+  <import file="${basedir}/common/module_common.xml"/>
+  
+  <import file="${basedir}/module_javaone_analysis_good.xml"/>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.models, clean.module.common, clean.module.javaone_analysis_good, clean.artifact.models" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.models, compile.module.common, compile.module.javaone_analysis_good" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.javaone_analysis_good:jar" value="${basedir}/out/artifacts/javaOne_analysis_good_jar"/>
+    <property name="artifact.output.models" value="${basedir}/out/artifacts/models"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.javaOne_analysis_good.jar" value="${artifacts.temp.dir}/javaOne_analysis_good.jar"/>
+  </target>
+  
+  <target name="clean.artifact.models" description="clean models artifact output">
+    <delete dir="${artifact.output.models}"/>
+  </target>
+  
+  <target name="artifact.javaone_analysis_good:jar" depends="init.artifacts, compile.module.javaone_analysis_good, compile.module.common, compile.module.models" description="Build &#39;javaOne_analysis_good:jar&#39; artifact">
+    <property name="artifact.temp.output.javaone_analysis_good:jar" value="${artifacts.temp.dir}/javaOne_analysis_good_jar"/>
+    <mkdir dir="${artifact.temp.output.javaone_analysis_good:jar}"/>
+    <jar destfile="${temp.jar.path.javaOne_analysis_good.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${javaone_analysis_good.output.dir}"/>
+      <zipfileset dir="${common.output.dir}"/>
+      <zipfileset dir="${models.output.dir}"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/jta-1.1.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/antlr-2.7.7.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/dom4j-1.6.1.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/c3p0-0.9.1.2.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/log4j-1.2.17.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/jsf-api-2.2.12.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/primefaces-5.2.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/jsf-impl-2.2.12.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/slf4j-api-1.7.12.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/slf4j-ext-1.7.12.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/querydsl-apt-3.6.8.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/querydsl-jpa-3.6.8.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/javassist-3.12.1.GA.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/slf4j-log4j12-1.7.12.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/prettyfaces-jsf2-3.3.3.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/jboss-logging-3.3.0.Final.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/postgresql-9.3-1103.jdbc3.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/hibernate-c3p0-5.0.1.Final.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/hibernate-core-5.0.1.Final.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/hibernate-validator-4.3.2.Final.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/hibernate-jpa-2.1-api-1.0.0.Final.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/hibernate-entitymanager-5.0.1.Final.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/querydsl-jpa-3.2.2-apt-hibernate-one-jar.jar"/>
+      <zipfileset src="${basedir}/WebContent/WEB-INF/lib/hibernate-commons-annotations-4.0.5.Final.jar"/>
+    </jar>
+    <copy file="${temp.jar.path.javaOne_analysis_good.jar}" tofile="${artifact.temp.output.javaone_analysis_good:jar}/javaOne_analysis_good.jar"/>
+  </target>
+  
+  <target name="artifact.models" depends="init.artifacts, compile.module.models" description="Build &#39;models&#39; artifact">
+    <mkdir dir="${artifact.output.models}"/>
+    <copy todir="${artifact.output.models}">
+      <fileset dir="${models.output.dir}"/>
+    </copy>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.javaone_analysis_good:jar, artifact.models" description="Build all artifacts">
+    <mkdir dir="${artifact.output.javaone_analysis_good:jar}"/>
+    <copy todir="${artifact.output.javaone_analysis_good:jar}">
+      <fileset dir="${artifact.temp.output.javaone_analysis_good:jar}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>

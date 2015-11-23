@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_javaone_analysis_good" default="compile.module.javaone_analysis_good">
+  <dirname property="module.javaone_analysis_good.basedir" file="${ant.file.module_javaone_analysis_good}"/>
+  
+  <property name="module.jdk.home.javaone_analysis_good" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.javaone_analysis_good" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.javaone_analysis_good" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.javaone_analysis_good" value="-encoding windows-1251 -source 8 ${compiler.args}"/>
+  
+  <property name="javaone_analysis_good.output.dir" value="${module.javaone_analysis_good.basedir}/bin"/>
+  <property name="javaone_analysis_good.testoutput.dir" value="${module.javaone_analysis_good.basedir}/bin"/>
+  
+  <path id="javaone_analysis_good.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="javaone_analysis_good.module.production.classpath">
+    <path refid="${module.jdk.classpath.javaone_analysis_good}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+    <pathelement location="${models.output.dir}"/>
+    <path refid="library.tomcat_7.0.65.classpath"/>
+  </path>
+  
+  <path id="javaone_analysis_good.runtime.production.module.classpath">
+    <pathelement location="${javaone_analysis_good.output.dir}"/>
+    <path refid="common.runtime.production.module.classpath"/>
+    <path refid="library.lib.classpath"/>
+    <path refid="models.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="javaone_analysis_good.module.classpath">
+    <pathelement location="${javaone_analysis_good.output.dir}"/>
+    <path refid="${module.jdk.classpath.javaone_analysis_good}"/>
+    <pathelement location="${common.testoutput.dir}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+    <pathelement location="${models.testoutput.dir}"/>
+    <pathelement location="${models.output.dir}"/>
+    <path refid="library.tomcat_7.0.65.classpath"/>
+  </path>
+  
+  <path id="javaone_analysis_good.runtime.module.classpath">
+    <pathelement location="${javaone_analysis_good.output.dir}"/>
+    <path refid="common.runtime.module.classpath"/>
+    <path refid="library.lib.classpath"/>
+    <path refid="models.runtime.module.classpath"/>
+    <path refid="library.tomcat_7.0.65.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.javaone_analysis_good">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.javaone_analysis_good">
+    <patternset refid="excluded.from.module.javaone_analysis_good"/>
+  </patternset>
+  
+  <path id="javaone_analysis_good.module.sourcepath">
+    <dirset dir="${module.javaone_analysis_good.basedir}">
+      <include name="src/main/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.javaone_analysis_good" depends="compile.module.javaone_analysis_good.production,compile.module.javaone_analysis_good.tests" description="Compile module javaOne_analysis_good"/>
+  
+  <target name="compile.module.javaone_analysis_good.production" depends="register.custom.compilers,compile.module.common,compile.module.models" description="Compile module javaOne_analysis_good; production classes">
+    <mkdir dir="${javaone_analysis_good.output.dir}"/>
+    <javac2 destdir="${javaone_analysis_good.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.javaone_analysis_good}/javac">
+      <compilerarg line="${compiler.args.javaone_analysis_good}"/>
+      <bootclasspath refid="javaone_analysis_good.module.bootclasspath"/>
+      <classpath refid="javaone_analysis_good.module.production.classpath"/>
+      <src refid="javaone_analysis_good.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.javaone_analysis_good"/>
+    </javac2>
+    
+    <copy todir="${javaone_analysis_good.output.dir}">
+      <fileset dir="${module.javaone_analysis_good.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.javaone_analysis_good.tests" depends="register.custom.compilers,compile.module.javaone_analysis_good.production" description="compile module javaOne_analysis_good; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.javaone_analysis_good" description="cleanup module">
+    <delete dir="${javaone_analysis_good.output.dir}"/>
+    <delete dir="${javaone_analysis_good.testoutput.dir}"/>
+  </target>
+</project>

@@ -1,0 +1,8 @@
+bin
+.idea
+*.eml
+*.userlibraries
+out/
+.settings
+build/
+*.classpath
